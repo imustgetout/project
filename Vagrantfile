@@ -22,8 +22,6 @@ Vagrant.configure(2) do |config|
             sysctl net.ipv4.conf.all.forwarding=1
             iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8080 -j DNAT --to 192.168.50.10:80
             iptables -t nat -A POSTROUTING  -p tcp --dst 192.168.50.10 --dport 80 -j SNAT --to-source 192.168.255.1
-            iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8081 -j DNAT --to 192.168.50.11:80
-            iptables -t nat -A POSTROUTING  -p tcp --dst 192.168.50.11 --dport 80 -j SNAT --to-source 192.168.255.1
             iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 9080 -j DNAT --to 192.168.50.12:80
             iptables -t nat -A POSTROUTING  -p tcp --dst 192.168.50.12 --dport 80 -j SNAT --to-source 192.168.255.1
             iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8443 -j DNAT --to 192.168.50.10:443
@@ -34,7 +32,6 @@ Vagrant.configure(2) do |config|
            #iptables -P INPUT DROP
             iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
             iptables -A FORWARD -m conntrack --ctstate NEW -d 192.168.50.10 -j ACCEPT
-            iptables -A FORWARD -m conntrack --ctstate NEW -d 192.168.50.11 -j ACCEPT
             iptables -A FORWARD -m conntrack --ctstate NEW -d 192.168.50.12 -j ACCEPT
             iptables -P FORWARD DROP
             ip route add 192.168.50.0/24 via 192.168.255.2
@@ -60,25 +57,16 @@ Vagrant.configure(2) do |config|
   config.vm.define "webServer" do |webServer|
     webServer.vm.host_name = "webServer"
     webServer.vm.network "private_network", ip: "192.168.50.10", virtualbox__intnet: "wpnet"
-    webServer.vm.provision "shell", run: "always", inline: <<-SHELL
-    ip route add 192.168.255.0/30 via 192.168.50.1
-    SHELL
   end
 
   config.vm.define "logServer" do |logServer|
     logServer.vm.network "private_network", ip: "192.168.50.11", virtualbox__intnet: "wpnet"
-    logServer.vm.provision "shell", run: "always", inline: <<-SHELL
-    ip route add 192.168.255.0/30 via 192.168.50.1
-    SHELL
-
+    logServer.vm.hostname = "logServer"
   end
 
   config.vm.define "zabbixServer" do |zabbixServer|
     zabbixServer.vm.network "private_network", ip: "192.168.50.12", virtualbox__intnet: "wpnet"
-    zabbixServer.vm.provision "shell", run: "always", inline: <<-SHELL
-    ip route add 192.168.255.0/30 via 192.168.50.1
-    SHELL
-
+    zabbixServer.vm.host_name = "zabbixServer"
   end
 
 end

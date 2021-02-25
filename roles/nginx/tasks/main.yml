@@ -43,17 +43,23 @@
   args:
     creates: /etc/ssl/certs/dhparam.pem
 
-#- name: nginx | copy nginx.conf
-#  become: yes
-#  copy:
-#    src: nginx.conf
-#    dest: /etc/nginx/nginx.conf
-#    backup: yes
+- name: nginx | copy nginx.conf
+  become: yes
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    backup: yes
 
 - name: nginx | restart nginx
   service:
     name: nginx
     state: restarted
+
+- name: nginx | enable firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
 
 - name: nginx | open http port
   firewalld:

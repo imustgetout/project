@@ -6,5 +6,5 @@
 
 - name: Install php-fpm and deps
   yum: 
-    name: ['php74', 'php74-php-fpm', 'php74-php-pecl-mysql', 'php74-php-mbstring', 'php74-php-enchant', 'php-PHPMailer', 'php74-php-process', 'php-simplepie', 'php74-php-xml', 'php74-php-bcmath', 'php74-php-gd', 'php74-php-ldap']
+    name: ['php74', 'php74-php-fpm', 'php74-php-pecl-mysql', 'php74-php-mbstring', 'php74-php-enchant', 'php-PHPMailer', 'php74-php-process', 'php-simplepie', 'php74-php-xml']
     enablerepo: remi-safe

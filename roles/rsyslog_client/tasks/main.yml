@@ -12,6 +12,15 @@
     insertafter: EOF
     line: '-w /etc/ -k etc_watch"'
 
+#- name: Rsysslog client | Set audit /etc
+#  raw: >
+#    echo "-w /etc/ -k etc_watch" >> /etc/audit/rules.d/audit.rules
+#
+#
+#- name: Rsyslog client | Save audit rule for /etc
+#  command: >
+#    auditctl -l >> /etc/audit/rules.d/audit.rules
+#
 - name: Rsyslog client | Add rsyslog send error messages
   lineinfile: 
     path: /etc/rsyslog.d/err.conf
@@ -69,17 +78,7 @@
     name: rsyslog
     state: restarted 
 
-- name: Rsyslog Server | open tcp port
-  firewalld:
-    port: 514/tcp
-    permanent: true
-    state: enabled
-    immediate: yes
-
-- name: Rsyslog Server | open udp port
-  firewalld:
-    port: 514/udp
-    permanent: true
-    state: enabled
-    immediate: yes
-
+- name: Rsyslog Server | Restart nginx
+  service:
+    name: nginx
+    state: restarted 
